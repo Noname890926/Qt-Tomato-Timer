@@ -39,7 +39,8 @@ void MainWindow::on_WorkingTimer_overflow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    _timer->start(1000);
+    _timer->setSingleShot(true);
+    _timer->start(6000);
     //while(true)
     //{
     //    ui->WorkingTimer->display(time.toString("hh:mm:ss"));
