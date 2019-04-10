@@ -3,6 +3,8 @@
 
 #include <QTime>
 
+#define INTERVAL (1000)
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -28,8 +30,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateTime()
 {
-    *_TimeRecord = _TimeRecord->addSecs(1);
-    ui->WorkingTimer->display(_TimeRecord->toString("hh:mm:ss"));
+    int ms = _TimeRecord->elapsed();
+
+    QTime tmpTime(0, 0);
+    tmpTime = tmpTime.addMSecs(ms);
+    ui->WorkingTimer->display(tmpTime.toString("hh:mm:ss"));
+
+    int m = tmpTime.minute();
+    if (m >= 1) {
+        _timer->stop();
+
+        ui->RelaxTimer->display(666);
+    }
 }
 
 void MainWindow::on_WorkingTimer_overflow()
@@ -39,10 +51,11 @@ void MainWindow::on_WorkingTimer_overflow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    _timer->setSingleShot(true);
-    _timer->start(6000);
-    //while(true)
-    //{
-    //    ui->WorkingTimer->display(time.toString("hh:mm:ss"));
-    //}
+    if (_timer->isActive()) {
+        _timer->stop();
+    }
+
+    _TimeRecord->setHMS(0, 0, 0);
+    _TimeRecord->start();
+    _timer->start(INTERVAL);
 }
